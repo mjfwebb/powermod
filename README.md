@@ -2,7 +2,7 @@
 
 A single power-mode switcher for a **Lenovo ThinkPad P15 Gen 2i** that
 front-ends *both* [`power-profiles-daemon`](https://gitlab.freedesktop.org/upower/power-profiles-daemon)
-(the three real profiles) **and** two custom “in-between” modes — giving one
+(the three real profiles) **and** two custom "in-between" modes, giving one
 ladder from quietest to fastest.
 
 ![powermod output: the help screen showing the current mode and the five-level ladder from power-saver through quiet, snappy, balanced, to performance, colour-coded with PPD vs custom labels](example.svg)
@@ -38,7 +38,7 @@ On the P15 Gen 2i, `power-profiles-daemon` only changes two things between
 
 It does **not** cap clock speed or power limits. The sluggishness of
 `power-saver` is almost entirely the `EPP=power` setting (the CPU is reluctant
-to ramp up clocks). The CPU’s EPP scale is:
+to ramp up clocks). The CPU's EPP scale is:
 
 ```
 performance → balance_performance → balance_power → power
@@ -47,7 +47,7 @@ performance → balance_performance → balance_power → power
 
 `balance_power` sits **exactly between** the two stock profiles. So the custom
 modes keep a cool/quiet firmware envelope but set `EPP=balance_power` for a
-willing ramp — quiet without the lag.
+willing ramp: quiet without the lag.
 
 ## The ladder (coolest/quietest → fastest/hottest)
 
@@ -71,24 +71,24 @@ powermod performance
 ```
 
 - **PPD levels** (`power-saver` / `balanced` / `performance`) go through
-  `powerprofilesctl` — no root needed.
+  `powerprofilesctl`, so no root needed.
 - **Custom levels** (`quiet` / `snappy`) write `platform_profile` and per-CPU
-  `energy_performance_preference`, which need root — the script re-`exec`s
-  itself under `sudo` automatically, so you just type `powermod quiet`.
+  `energy_performance_preference`, which need root, so the script re-`exec`s
+  itself under `sudo` automatically and you just type `powermod quiet`.
 
 With no argument (or `-h`/`--help`) powermod prints the ladder and the mode it
 detects as currently active, decoded from the real `platform_profile` and EPP
 knobs rather than the (possibly stale) PPD label. `powermod -V` prints the
 version.
 
-## Caveat: custom modes aren’t “sticky”
+## Caveat: custom modes aren't "sticky"
 
 `power-profiles-daemon` remains the real manager. It re-asserts its own EPP
 whenever you switch a profile, **suspend/resume, or change AC ↔ battery**, which
 will undo a `quiet`/`snappy` setting. Re-run `powermod` after those events.
 
 For a permanent, automatic custom profile (survives reboot and power events),
-the proper tool is **TLP** — it replaces `power-profiles-daemon` and lets you
+the proper tool is **TLP**, which replaces `power-profiles-daemon` and lets you
 pin `balance_power` (plus exact frequency / PL1 / PL2 limits) per AC and
 battery. powermod deliberately stays lighter than that, leaving
 `power-profiles-daemon` in charge.
