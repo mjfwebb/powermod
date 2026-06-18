@@ -7,6 +7,25 @@ ladder from quietest to fastest.
 
 ![powermod output: the help screen showing the current mode and the five-level ladder from power-saver through quiet, snappy, balanced, to performance, colour-coded with PPD vs custom labels](example.svg)
 
+## Install
+
+One line, no clone needed, and re-running the same line updates an existing
+install in place:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/mjfwebb/powermod/main/install.sh | bash
+```
+
+It installs to `~/.local/bin` (override with `POWERMOD_BIN_DIR`), which must be
+on your PATH. Or, from a clone:
+
+```bash
+install -Dm755 powermod ~/.local/bin/powermod
+```
+
+powermod itself needs nothing beyond `bash` and `powerprofilesctl`
+(`power-profiles-daemon`); the custom levels also use `sudo` to write sysfs.
+
 ## Why it exists
 
 On this machine `power-profiles-daemon` only changes two things between
@@ -39,25 +58,6 @@ willing ramp — quiet without the lag.
 | `snappy` | custom | balanced + EPP `balance_power` | mild, snappy |
 | `balanced` | PPD | balanced + EPP `balance_performance` | stock default |
 | `performance` | PPD | performance profile | fastest, hottest |
-
-## Install
-
-One line, no clone needed, and re-running the same line updates an existing
-install in place:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/mjfwebb/powermod/main/install.sh | bash
-```
-
-It installs to `~/.local/bin` (override with `POWERMOD_BIN_DIR`), which must be
-on your PATH. Or, from a clone:
-
-```bash
-install -Dm755 powermod ~/.local/bin/powermod
-```
-
-powermod itself needs nothing beyond `bash` and `powerprofilesctl`
-(`power-profiles-daemon`); the custom levels also use `sudo` to write sysfs.
 
 ## Usage
 
