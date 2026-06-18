@@ -28,7 +28,7 @@ powermod itself needs nothing beyond `bash` and `powerprofilesctl`
 
 ## Why it exists
 
-On this machine `power-profiles-daemon` only changes two things between
+On the P15 Gen 2i, `power-profiles-daemon` only changes two things between
 `power-saver` and `balanced`:
 
 | knob | balanced | power-saver |
@@ -90,7 +90,8 @@ will undo a `quiet`/`snappy` setting. Re-run `powermod` after those events.
 For a permanent, automatic custom profile (survives reboot and power events),
 the proper tool is **TLP** — it replaces `power-profiles-daemon` and lets you
 pin `balance_power` (plus exact frequency / PL1 / PL2 limits) per AC and
-battery. Not installed here yet.
+battery. powermod deliberately stays lighter than that, leaving
+`power-profiles-daemon` in charge.
 
 ## Contributing
 
