@@ -27,7 +27,7 @@ Tools needed:
 
 On Debian/Ubuntu: `sudo apt install bats shellcheck power-profiles-daemon`.
 
-Note that powermod targets one machine's knobs — a Lenovo ThinkPad P15 Gen 2i
+Note that powermod targets one machine's knobs: a Lenovo ThinkPad P15 Gen 2i
 with an `acpi` `platform_profile` and per-CPU `energy_performance_preference`.
 The custom (`quiet`/`snappy`) levels write those sysfs paths and re-exec under
 `sudo`; the three PPD levels go through `powerprofilesctl`.
@@ -44,12 +44,12 @@ call its functions directly. This puts a constraint on new code: above the
 guard, only definitions and read-only discovery; anything that mutates state or
 dispatches goes below it.
 
-The tests cover the pure logic — chiefly `decode_mode`, which maps a
+The tests cover the pure logic, chiefly `decode_mode`, which maps a
 `platform_profile`/EPP pair to a ladder-level label. It is kept free of any
 sysfs read so every branch can be exercised by passing values in. The live
 paths that read `/sys` and shell out to `powerprofilesctl`/`sudo` are exercised
 by hand on the machine rather than in CI. Add a test for new pure logic where
-you can — factoring a decoder so it reads its inputs as arguments (as
+you can: factoring a decoder so it reads its inputs as arguments (as
 `decode_mode` does) makes it testable without touching the hardware.
 
 ## Linting
@@ -76,7 +76,7 @@ Match the existing code:
   mode is decoded from the real knobs rather than the PPD label), not what the
   next line does.
 - Missing sensors or commands (no `powerprofilesctl`, an unreadable
-  `platform_profile`) must degrade gracefully — print `?`, never crash.
+  `platform_profile`) must degrade gracefully: print `?`, never crash.
 
 ## Pull requests
 
@@ -109,7 +109,7 @@ exactly one (the `bump-label` check fails and comments otherwise):
 | `bump:patch` | patch release | bug fixes, internal changes |
 | `bump:minor` | minor release | new user-facing behavior |
 | `bump:major` | major release | breaking changes |
-| `bump:none` | no release | docs, CI, comments — nothing users run |
+| `bump:none` | no release | docs, CI, comments (nothing users run) |
 
 `major` wins over `minor` over `patch` if several are somehow present. The
 `bump-label` check re-runs when you add or change the label, so a red check goes
