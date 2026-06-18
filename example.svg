@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="372" viewBox="0 0 800 372"
+     font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="13">
+  <rect width="800" height="372" rx="8" fill="#1e1f29"/>
+  <text xml:space="preserve">
+    <tspan x="16" y="26"><tspan fill="#f2f2f2" font-weight="bold">powermod</tspan><tspan fill="#d3d7cf"> - power mode switcher (ThinkPad P15)</tspan></tspan>
+    <tspan x="16" y="62"><tspan fill="#f2f2f2" font-weight="bold">Current:</tspan><tspan fill="#d3d7cf">  </tspan><tspan fill="#34e2e2">quiet (custom)</tspan><tspan fill="#7f8c98">   [platform_profile=low-power  EPP=balance_power  PPD-label=power-saver]</tspan></tspan>
+    <tspan x="16" y="98"><tspan fill="#f2f2f2" font-weight="bold">Levels</tspan><tspan fill="#7f8c98"> (coolest / quietest  -&gt;  fastest / hottest)</tspan></tspan>
+    <tspan x="16" y="134"><tspan fill="#d3d7cf">  </tspan><tspan fill="#8ae234">power-saver</tspan><tspan fill="#d3d7cf">   </tspan><tspan fill="#7f8c98">PPD </tspan><tspan fill="#d3d7cf"> low-power + EPP power           quietest, most lag</tspan></tspan>
+    <tspan x="16" y="152"><tspan fill="#d3d7cf">  </tspan><tspan fill="#8ae234">quiet</tspan><tspan fill="#d3d7cf">         </tspan><tspan fill="#fce94f">cust</tspan><tspan fill="#d3d7cf"> low-power + EPP balance_power   quiet, still responsive</tspan></tspan>
+    <tspan x="16" y="170"><tspan fill="#d3d7cf">  </tspan><tspan fill="#8ae234">snappy</tspan><tspan fill="#d3d7cf">        </tspan><tspan fill="#fce94f">cust</tspan><tspan fill="#d3d7cf"> balanced  + EPP balance_power   mild, snappy</tspan></tspan>
+    <tspan x="16" y="188"><tspan fill="#d3d7cf">  </tspan><tspan fill="#8ae234">balanced</tspan><tspan fill="#d3d7cf">      </tspan><tspan fill="#7f8c98">PPD </tspan><tspan fill="#d3d7cf"> balanced  + EPP balance_perf    stock default</tspan></tspan>
+    <tspan x="16" y="206"><tspan fill="#d3d7cf">  </tspan><tspan fill="#8ae234">performance</tspan><tspan fill="#d3d7cf">   </tspan><tspan fill="#7f8c98">PPD </tspan><tspan fill="#d3d7cf"> performance profile            fastest, hottest</tspan></tspan>
+    <tspan x="16" y="242"><tspan fill="#7f8c98">  cust = custom mode (auto-prompts for sudo);  PPD = via power-profiles-daemon</tspan></tspan>
+    <tspan x="16" y="278"><tspan fill="#f2f2f2" font-weight="bold">Usage:</tspan><tspan fill="#d3d7cf">  powermod &lt;level&gt;      e.g. </tspan><tspan fill="#34e2e2">powermod quiet</tspan></tspan>
+    <tspan x="16" y="296"><tspan fill="#d3d7cf">        powermod              show this help + current state</tspan></tspan>
+    <tspan x="16" y="332"><tspan fill="#7f8c98">Note: custom (quiet/snappy) modes are not sticky - power-profiles-daemon</tspan></tspan>
+    <tspan x="16" y="350"><tspan fill="#7f8c98">re-asserts its own settings on profile switch, suspend/resume, or AC&lt;-&gt;battery.</tspan></tspan>
+  </text>
+</svg>

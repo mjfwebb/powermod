@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+# powermod - unified power-mode switcher for this ThinkPad P15.
+#
+# Front-ends BOTH power-profiles-daemon (the 3 real profiles) and two custom
+# in-between modes (low-power/balanced firmware envelope + balance_power EPP),
+# giving a single ladder from quietest to fastest.
+#
+#   powermod              show this help + current state
+#   powermod <level>      switch to a level (custom levels auto-prompt for sudo)
+
+# Version is owned by main and bumped once per release by CI (read, not
+# executed, by install.sh to report what an update did). See CONTRIBUTING.md.
+VERSION=1.0.0
+
+SELF=$(readlink -f "$0")
+PP=/sys/firmware/acpi/platform_profile
+EPP_GLOB='/sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference'
+
+if [[ -t 1 ]]; then B=$'\e[1m'; G=$'\e[32m'; Y=$'\e[33m'; C=$'\e[36m'; GR=$'\e[90m'; RST=$'\e[0m'
+else B= G= Y= C= GR= RST=; fi
+
+cur_profile() { powerprofilesctl get 2>/dev/null || echo "?"; }
+cur_pp()      { cat "$PP" 2>/dev/null || echo "?"; }
+cur_epp()     { cat /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference 2>/dev/null || echo "?"; }
+
+# Pure decode of platform_profile + EPP to a ladder-level label. Kept free of
+# any sysfs read so the tests can exercise every branch by passing values in.
+decode_mode() {  # $1 = platform_profile, $2 = EPP
+  case "$1/$2" in
+    low-power/power)               echo "power-saver" ;;
+    low-power/balance_power)       echo "quiet (custom)" ;;
+    balanced/balance_power)        echo "snappy (custom)" ;;
+    balanced/balance_performance)  echo "balanced" ;;
+    performance/performance)       echo "performance" ;;
+    *)                             echo "custom ($1 / $2)" ;;
+  esac
+}
+
+# work out which ladder level is ACTUALLY active from the real knobs, since
+# power-profiles-daemon's own label is stale while a custom mode is applied.
+cur_mode() { decode_mode "$(cur_pp)" "$(cur_epp)"; }
+
+# apply a custom mode (needs root): set platform_profile + balance_power EPP
+set_custom() {  # $1 = platform_profile value
+  if [[ $EUID -ne 0 ]]; then exec sudo "$SELF" "$MODE"; fi
+  echo "$1" > "$PP"
+  for f in $EPP_GLOB; do echo balance_power > "$f"; done
+}
+
+show_help() {
+  cat <<EOF
+${B}powermod${RST} - power mode switcher (ThinkPad P15)
+
+${B}Current:${RST}  ${C}$(cur_mode)${RST}   ${GR}[platform_profile=$(cur_pp)  EPP=$(cur_epp)  PPD-label=$(cur_profile)]${RST}
+
+${B}Levels${RST} ${GR}(coolest / quietest  ->  fastest / hottest)${RST}
+
+  ${G}power-saver${RST}   ${GR}PPD ${RST} low-power + EPP power           quietest, most lag
+  ${G}quiet${RST}         ${Y}cust${RST} low-power + EPP balance_power   quiet, still responsive
+  ${G}snappy${RST}        ${Y}cust${RST} balanced  + EPP balance_power   mild, snappy
+  ${G}balanced${RST}      ${GR}PPD ${RST} balanced  + EPP balance_perf    stock default
+  ${G}performance${RST}   ${GR}PPD ${RST} performance profile            fastest, hottest
+
+  ${GR}cust = custom mode (auto-prompts for sudo);  PPD = via power-profiles-daemon${RST}
+
+${B}Usage:${RST}  powermod <level>      e.g. ${C}powermod quiet${RST}
+        powermod              show this help + current state
+
+${GR}Note: custom (quiet/snappy) modes are not sticky - power-profiles-daemon
+re-asserts its own settings on profile switch, suspend/resume, or AC<->battery.${RST}
+EOF
+}
+
+# When sourced (by the tests), stop here: everything above is definitions and
+# read-only helpers, everything below mutates state or dispatches.
+[[ ${BASH_SOURCE[0]} != "$0" ]] && return 0
+
+MODE="${1:-}"
+case "$MODE" in
+  ""|-h|--help|help) show_help ;;
+  -V|--version) echo "powermod $VERSION" ;;
+  power-saver|balanced|performance)
+    powerprofilesctl set "$MODE" && echo "${G}->${RST} power-profiles-daemon profile: ${B}$(cur_profile)${RST}"
+    ;;
+  quiet)
+    set_custom low-power
+    echo "${G}->${RST} ${B}quiet${RST}: platform_profile=$(cur_pp)  EPP=$(cur_epp)  ${GR}(PPD still: $(cur_profile))${RST}"
+    ;;
+  snappy)
+    set_custom balanced
+    echo "${G}->${RST} ${B}snappy${RST}: platform_profile=$(cur_pp)  EPP=$(cur_epp)  ${GR}(PPD still: $(cur_profile))${RST}"
+    ;;
+  *)
+    echo "powermod: unknown level '$MODE'" >&2
+    echo "try one of: power-saver quiet snappy balanced performance  (or run 'powermod' for help)" >&2
+    exit 1 ;;
+esac
