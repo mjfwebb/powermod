@@ -17,7 +17,7 @@ PP=/sys/firmware/acpi/platform_profile
 EPP_GLOB='/sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference'
 
 if [[ -t 1 ]]; then B=$'\e[1m'; G=$'\e[32m'; Y=$'\e[33m'; C=$'\e[36m'; GR=$'\e[90m'; RST=$'\e[0m'
-else B= G= Y= C= GR= RST=; fi
+else B='' G='' Y='' C='' GR='' RST=''; fi
 
 cur_profile() { powerprofilesctl get 2>/dev/null || echo "?"; }
 cur_pp()      { cat "$PP" 2>/dev/null || echo "?"; }
